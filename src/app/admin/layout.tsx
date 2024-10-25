@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import { ThemeProvider } from '@/components/theme-provider';
 
 export const metadata: Metadata = {
   title: "Admin Dashboard - NYT Clone",
@@ -10,5 +11,11 @@ export default function AdminLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <div className="min-h-screen bg-background">{children}</div>;
+  return (
+    <ThemeProvider attribute="class" defaultTheme="light">
+      <div className="min-h-screen bg-background">
+        {children}
+      </div>
+    </ThemeProvider>
+  );
 }

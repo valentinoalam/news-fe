@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { v4 as uuidv4 } from 'uuid';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -28,7 +29,7 @@ export default function AdminPage() {
 
   const handleCreateArticle = () => {
     const newArticle: Article = {
-      id: Date.now().toString(),
+      id: uuidv4(),
       title: "",
       excerpt: "",
       content: "",
@@ -140,7 +141,7 @@ export default function AdminPage() {
                       <Label htmlFor="content">Content</Label>
                       <PlateEditor
                         initialValue={selectedArticle.content}
-                        onChange={(value) =>
+                        onChange={(value: string) =>
                           setSelectedArticle({ ...selectedArticle, content: value })
                         }
                       />

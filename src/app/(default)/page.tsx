@@ -36,7 +36,7 @@ export default function Home() {
               <Card key={i} className="p-4">
                 <div className="relative aspect-video mb-3">
                   <Image
-                    src={`https://images.unsplash.com/photo-${1600000000000 + i}`}
+                    src={`https://picsum.photos/200/200?random=${i}`}
                     alt={`Story ${i}`}
                     fill
                     className="object-cover rounded-md"
