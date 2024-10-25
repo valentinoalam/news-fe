@@ -1,7 +1,10 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
 import { ChevronRight, ChevronDown, FolderOpen, Folder, Plus, Edit2, Trash2, GripVertical } from 'lucide-react';
 import {
   Collapsible,
@@ -18,12 +21,12 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import {
-//   Form,
+  Form,
   FormControl,
-//   FormField,
+  FormField,
   FormItem,
   FormLabel,
-//   FormMessage,
+  // FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import {
@@ -34,6 +37,8 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { cn } from '@/lib/utils';
+// import { CreateCategoryDTO } from '@/types/category';
+// import { useCategories } from '@/hooks/use-category';
 
 const initialCategories = [
   {
@@ -67,51 +72,93 @@ const initialCategories = [
   },
 ];
 
+// Define the validation schema using Zod
+const categorySchema = z.object({
+  name: z.string().nonempty("Category name is required"),
+  parentId: z.string().nullable(), // Allow parentId to be null
+});
+// Type for form inputs
+type CategoryFormInputs = {
+  name: string;
+  parentId: string | null;
+};
+
 const CategoryForm = ({ category, onSubmit, parentOptions }) => {
+  const form = useForm<CategoryFormInputs>({
+    resolver: zodResolver(categorySchema),
+    defaultValues: {
+      name: category?.name || '',
+      parentId: category?.parentId || null,
+    },
+  });
+
+  // Effect to set default values when category changes
+  useEffect(() => {
+    form.reset({
+      name: category?.name || '',
+      parentId: category?.parentId || null,
+    });
+  }, [category, form]);
+  // State to manage form inputs
   const [name, setName] = useState(category?.name || '');
   const [parentId, setParentId] = useState(category?.parentId || '');
 
-  const handleSubmit = (e: { preventDefault: () => void; }) => {
-    e.preventDefault();
-    const slug = name.toLowerCase().replace(/\s+/g, '-');
-    onSubmit({ name, slug, parentId: parentId || null });
+  // Handle form submission
+  const submit = (data: CategoryFormInputs) => {
+    const slug = data.name.toLowerCase().replace(/\s+/g, '-'); // Create slug from name
+    onSubmit({ ...data, slug }); // Pass form data to onSubmit
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <FormItem>
-        <FormLabel>Category Name</FormLabel>
-        <FormControl>
-          <Input
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="Enter category name"
-            required
-          />
-        </FormControl>
-      </FormItem>
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(submit)} className="space-y-8">
+        {/* Category Name Input */}
+        <FormField
+          control={form.control}
+          name="name"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Category Name</FormLabel>
+              <FormControl>
+                <Input
+                  {...field} // Register the input with React Hook Form
+                  placeholder="Enter category name"
+                  required
+                />
+              </FormControl>
+            </FormItem>
+          )}
+        />
 
-      <FormItem>
-        <FormLabel>Parent Category</FormLabel>
-        <Select value={parentId} onValueChange={setParentId}>
-          <SelectTrigger>
-            <SelectValue placeholder="Select parent category" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="">None</SelectItem>
-            {parentOptions.map((option: { id: string; name: string; }) => (
-              <SelectItem key={option.id} value={option.id}>
-                {option.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </FormItem>
-
-      <Button type="submit">
-        {category ? 'Update Category' : 'Create Category'}
-      </Button>
-    </form>
+        {/* Parent Category Select */}
+        <FormField
+          control={form.control}
+          name="parentId"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Parent Category</FormLabel>
+              <Select {...field} value={field.value || ''} onValueChange={field.onChange}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select parent category" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="none">None</SelectItem> {/* Use a valid value here */}
+                  {parentOptions.map((option) => (
+                    <SelectItem key={option.id} value={option.id}>
+                      {option.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </FormItem>
+          )}
+        />
+        {/* Submit Button */}
+        <Button type="submit">
+          {category ? 'Update Category' : 'Create Category'}
+        </Button>
+      </form>
+    </Form>
   );
 };
 
@@ -193,6 +240,14 @@ const CategoryItem = ({ category, level = 0, onEdit, onDelete }) => {
 };
 
 const CategoryAdmin = () => {
+  // const {
+  //   categories,
+  //   loading,
+  //   error,
+  //   createCategory,
+  //   updateCategory,
+  //   deleteCategory
+  // } = useCategories();
   const [categories, setCategories] = useState(initialCategories);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingCategory, setEditingCategory] = useState(null);
@@ -206,6 +261,15 @@ const CategoryAdmin = () => {
     });
     return result;
   };
+
+  // const handleCreateCategorys = async (data: CreateCategoryDTO) => {
+  //   try {
+  //     await createCategory(data);
+  //     setIsDialogOpen(false);
+  //   } catch (error) {
+  //     // Handle error (show toast, etc.)
+  //   }
+  // };
 
   const handleCreateCategory = (data: object) => {
     const newCategory = {

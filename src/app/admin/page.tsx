@@ -10,7 +10,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Switch } from "@/components/ui/switch";
 import { PlateEditor } from "@/components/plate-editor";
 import { ScrollArea } from "@/components/ui/scroll-area";
-
+import CategoryAdmin from "./category/page";
 interface Article {
   id: string;
   title: string;
@@ -60,20 +60,27 @@ export default function AdminPage() {
     <div className="container mx-auto px-4 py-8">
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold">Admin Dashboard</h1>
-        <Button onClick={handleCreateArticle}>Create New Article</Button>
+        {/* <Button onClick={handleCreateArticle}>Create New Article</Button> */}
       </div>
 
       <Tabs defaultValue="articles">
         <TabsList>
           <TabsTrigger value="articles">Articles</TabsTrigger>
           <TabsTrigger value="headlines">Headlines</TabsTrigger>
+          <TabsTrigger value="categories">Categories</TabsTrigger>
         </TabsList>
 
         <TabsContent value="articles">
+          <div className="p-4 space-y-4">
+            <div className="flex justify-between items-center">
+              <h2 className="text-2xl font-bold">Articles</h2>
+              <Button onClick={handleCreateArticle}>Create New Article</Button>
+            </div>
+            </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <Card className="md:col-span-1">
               <CardHeader>
-                <CardTitle>Articles</CardTitle>
+                {/* <CardTitle>Articles</CardTitle> */}
                 <CardDescription>Manage your articles</CardDescription>
               </CardHeader>
               <CardContent>
@@ -210,6 +217,9 @@ export default function AdminPage() {
               </ScrollArea>
             </CardContent>
           </Card>
+        </TabsContent>
+        <TabsContent value="categories">
+          <CategoryAdmin />
         </TabsContent>
       </Tabs>
     </div>
