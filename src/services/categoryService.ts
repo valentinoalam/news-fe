@@ -1,125 +1,112 @@
-import { Category, CreateCategoryDTO, UpdateCategoryDTO } from '@/types/category';
+import api from '@/lib/api';
+import { API_CONFIG } from '@/config/api';
+import { 
+    Category,
+    CategoryResponse,
+    CreateCategoryDTO, 
+    UpdateCategoryDTO 
+} from '@/types/category';
+import { AxiosError } from 'axios';
 
+class ApiError extends Error {
+    constructor(
+      message: string,
+      public status?: number,
+      public errors?: unknown
+    ) {
+      super(message);
+      this.name = 'ApiError';
+    }
+  }
 class CategoryService {
-    private readonly baseUrl = '/api/categories';
+    private readonly endpoint = API_CONFIG.endpoints.categories;
 
-    async getCategories(): Promise<Category[]> {
-        try {
-        const response = await fetch(this.baseUrl);
-        
-        if (!response.ok) {
-            throw new Error('Failed to fetch categories');
-        }
-
-        const data = await response.json();
-        return this.buildCategoryTree(data);
-        } catch (error) {
-        console.error('Error fetching categories:', error);
-        throw error;
-        }
+    async getCategories(params?: {
+      page?: number;
+      limit?: number;
+      search?: string;
+      parentId?: string | null;
+    }): Promise<CategoryResponse> {
+      try {
+        const { data } = await api.get(this.endpoint, { params });
+        const { success, totalRecords, message } = data;
+        const meta = {
+          success,
+          totalRecords,
+          message
+        };
+        const records = data.data;
+        return {records, meta}
+      } catch (error) {
+        this.handleError(error);
+      }
     }
-
+  
     async getCategory(id: number): Promise<Category> {
-        try {
-        const response = await fetch(`${this.baseUrl}/${id}`);
-        
-        if (!response.ok) {
-            throw new Error('Failed to fetch category');
-        }
-
-        return await response.json();
-        } catch (error) {
-        console.error(`Error fetching category ${id}:`, error);
-        throw error;
-        }
+      try {
+        const { data } = await api.get<Category>(`${this.endpoint}/${id}`);
+        return data;
+      } catch (error) {
+        this.handleError(error);
+      }
     }
-
-    async createCategory(data: CreateCategoryDTO): Promise<Category> {
-        try {
-        const response = await fetch(this.baseUrl, {
-            method: 'POST',
-            headers: {
-            'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data),
-        });
-
-        if (!response.ok) {
-            const error = await response.json();
-            throw new Error(error.message || 'Failed to create category');
-        }
-
-        return await response.json();
-        } catch (error) {
-        console.error('Error creating category:', error);
-        throw error;
-        }
+  
+    async createCategory(categoryData: CreateCategoryDTO): Promise<Category> {
+      try {
+        const { data } = await api.post<Category>(this.endpoint, categoryData);
+        return data;
+      } catch (error) {
+        this.handleError(error);
+      }
     }
-
-    async updateCategory(data: UpdateCategoryDTO): Promise<Category> {
-        try {
-        const response = await fetch(`${this.baseUrl}/${data.id}`, {
-            method: 'PATCH',
-            headers: {
-            'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data),
-        });
-
-        if (!response.ok) {
-            const error = await response.json();
-            throw new Error(error.message || 'Failed to update category');
-        }
-
-        return await response.json();
-        } catch (error) {
-        console.error(`Error updating category ${data.id}:`, error);
-        throw error;
-        }
+  
+    async updateCategory({ id, ...categoryData }: UpdateCategoryDTO): Promise<Category> {
+      try {
+        const { data } = await api.patch<Category>(
+          `${this.endpoint}/${id}`,
+          categoryData
+        );
+        return data;
+      } catch (error) {
+        this.handleError(error);
+      }
     }
-
+  
     async deleteCategory(id: number): Promise<void> {
-        try {
-        const response = await fetch(`${this.baseUrl}/${id}`, {
-            method: 'DELETE',
-        });
-
-        if (!response.ok) {
-            throw new Error('Failed to delete category');
-        }
-        } catch (error) {
-        console.error(`Error deleting category ${id}:`, error);
-        throw error;
-        }
+      try {
+        await api.delete(`${this.endpoint}/${id}`);
+      } catch (error) {
+        this.handleError(error);
+      }
     }
-
-    private buildCategoryTree(categories: Category[]): Category[] {
-        const categoryMap = new Map<number, Category>();
-        const rootCategories: Category[] = [];
-
-        // First pass: create map of all categories
-        categories.forEach(category => {
-        categoryMap.set(category.id, { ...category, children: [] });
-        });
-
-        // Second pass: build tree structure
-        categories.forEach(category => {
-            const currentCategory = categoryMap.get(category.id)!;
-            
-            if (category.parentId === null) {
-                rootCategories.push(currentCategory);
-            } else {
-                const parentCategory = categoryMap.get(category.parentId);
-                if (parentCategory) {
-                parentCategory.children = parentCategory.children || [];
-                parentCategory.children.push(currentCategory);
-                }
-            }
-        });
-
-        return rootCategories;
+  
+    async bulkDelete(ids: number[]): Promise<void> {
+      try {
+        await api.post(`${this.endpoint}/bulk-delete`, { ids });
+      } catch (error) {
+        this.handleError(error);
+      }
     }
-
+  
+    async reorderCategories(orderedIds: { id: number; position: number }[]): Promise<void> {
+      try {
+        await api.post(`${this.endpoint}/reorder`, { orderedIds });
+      } catch (error) {
+        this.handleError(error);
+      }
+    }
+  
+    private handleError(error: unknown): never {
+      if (error instanceof AxiosError) {
+        const status = error.response?.status;
+        const message = error.response?.data?.message || error.message;
+        const errors = error.response?.data?.errors;
+  
+        throw new ApiError(message, status, errors);
+      }
+      throw error;
+    }
+    
     // Utility method to generate a URL-friendly slug
     generateSlug(name: string): string {
         return name
@@ -130,3 +117,4 @@ class CategoryService {
 }
 
 export const categoryService = new CategoryService();
+

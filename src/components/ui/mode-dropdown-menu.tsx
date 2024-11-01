@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 
 import type { DropdownMenuProps } from '@radix-ui/react-dropdown-menu';
 
@@ -21,6 +21,8 @@ import {
 } from './dropdown-menu';
 import { ToolbarButton } from './toolbar';
 
+type Item = Record<string, ReactNode>;
+
 export function ModeDropdownMenu(props: DropdownMenuProps) {
   const editor = useEditorRef();
   const setReadOnly = usePlateStore().set.readOnly();
@@ -31,7 +33,7 @@ export function ModeDropdownMenu(props: DropdownMenuProps) {
 
   if (readOnly) value = 'viewing';
 
-  const item: any = {
+  const item: Item = {
     editing: (
       <>
         <Icons.editing className="mr-2 size-5" />

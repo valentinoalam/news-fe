@@ -10,10 +10,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { format } from "date-fns";
+import Link from "next/link";
+import NavBar from "./topNavbar";
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-
+  const appName = process.env.NEXT_PUBLIC_APP_NAME;
   return (
     <header className="border-b">
       <div className="container mx-auto px-4">
@@ -35,7 +37,9 @@ export default function Header() {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuItem>Sign In</DropdownMenuItem>
+                <Link href="/signup">
+                  <DropdownMenuItem>Sign Up</DropdownMenuItem>
+                </Link>
                 <DropdownMenuItem>Create Account</DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -47,19 +51,8 @@ export default function Header() {
           <div className="text-xs uppercase tracking-wider mb-2">
             {format(new Date(), "EEEE, MMMM d, yyyy")}
           </div>
-          <h1 className="text-5xl font-serif mb-4">The New York Times</h1>
-          <nav className="hidden md:block">
-            <ul className="flex justify-center space-x-6 text-sm">
-              <li><Button variant="link">World</Button></li>
-              <li><Button variant="link">U.S.</Button></li>
-              <li><Button variant="link">Politics</Button></li>
-              <li><Button variant="link">N.Y.</Button></li>
-              <li><Button variant="link">Business</Button></li>
-              <li><Button variant="link">Opinion</Button></li>
-              <li><Button variant="link">Science</Button></li>
-              <li><Button variant="link">Arts</Button></li>
-            </ul>
-          </nav>
+          <h1 className="text-5xl font-serif mb-4">{ appName }</h1>
+          <NavBar />
         </div>
       </div>
     </header>

@@ -1,66 +1,77 @@
-// hooks/useCategories.ts
-import { useState, useEffect } from 'react';
-import { Category, CreateCategoryDTO, UpdateCategoryDTO } from '@/types/category';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { CategoryParams, CreateCategoryDTO, UpdateCategoryDTO } from '@/types/category';
 import { categoryService } from '@/services/categoryService';
 
-export function useCategories() {
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
+export const QUERY_KEYS = {
+  categories: 'categories',
+};
 
-  useEffect(() => {
-    fetchCategories();
-  }, []);
+export function useCategories(params?: CategoryParams) {
+  const queryClient = useQueryClient();
 
-  const fetchCategories = async () => {
-    try {
-      setLoading(true);
-      const data = await categoryService.getCategories();
-      setCategories(data);
-      setError(null);
-    } catch (err) {
-      setError(err instanceof Error ? err : new Error('Failed to fetch categories'));
-    } finally {
-      setLoading(false);
-    }
-  };
+  const {
+    data,
+    isLoading,
+    error,
+    refetch
+  } = useQuery({
+    queryKey: [QUERY_KEYS.categories, params],
+    queryFn: () => categoryService.getCategories(params),
+  });
 
-  const createCategory = async (data: CreateCategoryDTO) => {
-    try {
-      const newCategory = await categoryService.createCategory(data);
-      await fetchCategories(); // Refresh the list
-      return newCategory;
-    } catch (err) {
-      throw err instanceof Error ? err : new Error('Failed to create category');
-    }
-  };
+  const createMutation = useMutation({
+    mutationFn: (newCategory: CreateCategoryDTO) => 
+      categoryService.createCategory(newCategory),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.categories] });
+    },
+  });
 
-  const updateCategory = async (data: UpdateCategoryDTO) => {
-    try {
-      const updatedCategory = await categoryService.updateCategory(data);
-      await fetchCategories(); // Refresh the list
-      return updatedCategory;
-    } catch (err) {
-      throw err instanceof Error ? err : new Error('Failed to update category');
-    }
-  };
+  const updateMutation = useMutation({
+    mutationFn: (updatedCategory: UpdateCategoryDTO) =>
+      categoryService.updateCategory(updatedCategory),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.categories] });
+    },
+  });
 
-  const deleteCategory = async (id: number) => {
-    try {
-      await categoryService.deleteCategory(id);
-      await fetchCategories(); // Refresh the list
-    } catch (err) {
-      throw err instanceof Error ? err : new Error('Failed to delete category');
-    }
-  };
+  const deleteMutation = useMutation({
+    mutationFn: (id: number) => categoryService.deleteCategory(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.categories] });
+    },
+  });
+
+  const bulkDeleteMutation = useMutation({
+    mutationFn: (ids: number[]) => categoryService.bulkDelete(ids),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.categories] });
+    },
+  });
+
+  const reorderMutation = useMutation({
+    mutationFn: (orderedIds: { id: number; position: number }[]) =>
+      categoryService.reorderCategories(orderedIds),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.categories] });
+    },
+  });
 
   return {
-    categories,
-    loading,
+    categories: data?.records ?? [],
+    meta: data?.meta,
+    isLoading,
     error,
-    createCategory,
-    updateCategory,
-    deleteCategory,
-    refreshCategories: fetchCategories,
+    refetch,
+    createCategory: createMutation.mutateAsync,
+    updateCategory: updateMutation.mutateAsync,
+    deleteCategory: deleteMutation.mutateAsync,
+    bulkDeleteCategories: bulkDeleteMutation.mutateAsync,
+    reorderCategories: reorderMutation.mutateAsync,
+    isCreating: createMutation.isPending,
+    isUpdating: updateMutation.isPending,
+    isDeleting: deleteMutation.isPending,
+    isBulkDeleting: bulkDeleteMutation.isPending,
+    isReordering: reorderMutation.isPending,
   };
 }

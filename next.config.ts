@@ -1,11 +1,12 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  output: 'export',
+  reactStrictMode: true,
+  // output: 'export',
   eslint: {
     ignoreDuringBuilds: true,
   },
-  images: { unoptimized: true },
+  images: { domains: ["images.unsplash.com"], unoptimized: true },
 };
 
 export default nextConfig;

@@ -1,40 +1,84 @@
-export const metadata = {
-  title: 'Sign Up - Simple',
-  description: 'Page description',
-}
-
+'use client'
+// import { registerUser } from '@/app/api/auth/register';
+import { signIn } from 'next-auth/react';
 import Link from 'next/link'
+import { useState } from 'react';
 
 export default function SignUp() {
+  const [email, setEmail] = useState('');
+  const [name, setName] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+
+  const handleRegister = async (e: { preventDefault: () => void; }) => {
+    e.preventDefault();
+    setError('');
+    setSuccess('');
+    const result = await signIn("credentials", {
+      redirect: false,
+      email,
+      password,
+      isRegister: true, // Custom option to indicate registration
+    });
+  
+    if (result?.error) {
+      console.error("Registration error:", result.error);
+      setError(result?.error);
+    } else {
+      console.log("Registered successfully!");
+    }
+  };
+
   return (
-    <section className="bg-gradient-to-b from-gray-100 to-white">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6">
-        <div className="pt-32 pb-12 md:pt-40 md:pb-20">
-
+    <main className="flex mt-0 transition-all duration-200 ease-soft-in-out">
+      <section className="bg-gradient-to-b from-gray-100 to-white">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6">
           {/* Page header */}
-          <div className="max-w-3xl mx-auto text-center pb-12 md:pb-20">
-            <h1 className="h1">Welcome. We exist to make entrepreneurism easier.</h1>
+          <div className="p-6 mb-0 bg-transparent border-b-0 rounded-t-2xl max-w-3xl mx-auto text-center mt-7 pb-8">
+            <h3 className="relative text-4xl z-10 font-bold text-transparent bg-gradient-to-tl from-blue-600 to-cyan-400 bg-clip-text">Welcome</h3>
+            <p className="mb-0">Create your account to read articles</p>
           </div>
-
           {/* Form */}
           <div className="max-w-sm mx-auto">
-            <form>
+            <form onSubmit={handleRegister}>
               <div className="flex flex-wrap -mx-3 mb-4">
                 <div className="w-full px-3">
                   <label className="block text-gray-800 text-sm font-medium mb-1" htmlFor="name">Name <span className="text-red-600">*</span></label>
-                  <input id="name" type="text" className="form-input w-full text-gray-800" placeholder="Enter your name" required />
+                  <input 
+                    id="name" 
+                    type="text" 
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    className="form-input w-full text-gray-800" 
+                    placeholder="Enter your name" 
+                    required />
                 </div>
               </div>
               <div className="flex flex-wrap -mx-3 mb-4">
                 <div className="w-full px-3">
                   <label className="block text-gray-800 text-sm font-medium mb-1" htmlFor="email">Email <span className="text-red-600">*</span></label>
-                  <input id="email" type="email" className="form-input w-full text-gray-800" placeholder="Enter your email address" required />
+                  <input 
+                    id="email" 
+                    type="email" 
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="form-input w-full text-gray-800" 
+                    placeholder="Enter your email address" 
+                    required />
                 </div>
               </div>
               <div className="flex flex-wrap -mx-3 mb-4">
                 <div className="w-full px-3">
                   <label className="block text-gray-800 text-sm font-medium mb-1" htmlFor="password">Password <span className="text-red-600">*</span></label>
-                  <input id="password" type="password" className="form-input w-full text-gray-800" placeholder="Enter your password" required />
+                  <input 
+                    id="password"
+                    type="password" 
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="form-input w-full text-gray-800" 
+                    placeholder="Enter your password" 
+                    required />
                 </div>
               </div>
               <div className="flex flex-wrap -mx-3 mt-6">
@@ -51,7 +95,7 @@ export default function SignUp() {
               <div className="text-gray-600 italic">Or</div>
               <div className="border-t border-gray-300 grow ml-3" aria-hidden="true"></div>
             </div>
-            <form>
+            {/* <form>
               <div className="flex flex-wrap -mx-3 mb-3">
                 <div className="w-full px-3">
                   <button className="btn px-0 text-white bg-gray-900 hover:bg-gray-800 w-full relative flex items-center">
@@ -64,7 +108,7 @@ export default function SignUp() {
               </div>
               <div className="flex flex-wrap -mx-3">
                 <div className="w-full px-3">
-                  <button className="btn px-0 text-white bg-red-600 hover:bg-red-700 w-full relative flex items-center">
+                  <button type="submit" className="btn px-0 text-white bg-red-600 hover:bg-red-700 w-full relative flex items-center">
                     <svg className="w-4 h-4 fill-current text-white opacity-75 shrink-0 mx-4" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
                       <path d="M7.9 7v2.4H12c-.2 1-1.2 3-4 3-2.4 0-4.3-2-4.3-4.4 0-2.4 2-4.4 4.3-4.4 1.4 0 2.3.6 2.8 1.1l1.9-1.8C11.5 1.7 9.9 1 8 1 4.1 1 1 4.1 1 8s3.1 7 7 7c4 0 6.7-2.8 6.7-6.8 0-.5 0-.8-.1-1.2H7.9z" />
                     </svg>
@@ -72,14 +116,15 @@ export default function SignUp() {
                   </button>
                 </div>
               </div>
-            </form>
+            </form> */}
+            {error && <p style={{ color: 'red' }}>{error}</p>}
+            {success && <p style={{ color: 'green' }}>{success}</p>}
             <div className="text-gray-600 text-center mt-6">
-              Already using Simple? <Link href="/signin" className="text-blue-600 hover:underline transition duration-150 ease-in-out">Sign in</Link>
+              Already have an account? <Link href="/signin" className="text-blue-600 hover:underline transition duration-150 ease-in-out">Sign in</Link>
             </div>
           </div>
-
         </div>
-      </div>
-    </section>
+      </section>
+    </main>
   )
 }

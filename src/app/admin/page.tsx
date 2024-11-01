@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
-import { PlateEditor } from "@/components/plate-editor";
+import PlateEditor from "@/components/plateEditor";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import CategoryAdmin from "./category/page";
 interface Article {
@@ -43,6 +43,46 @@ export default function AdminPage() {
   };
 
   const handleSaveArticle = () => {
+    // async function savePlateContent(content: object) {
+    //   // Assuming images are stored separately and image URLs are embedded in `content`
+    //   try {
+    //     const response = await axios.post('/api/content', { content });
+    //     console.log('Content saved successfully:', response.data);
+    //   } catch (error) {
+    //     console.error('Error saving content:', error);
+    //   }
+    // }
+    
+    // Function to handle image upload and return the URL
+    // async function uploadImage(file: string | Blob) {
+    //   const formData = new FormData();
+    //   formData.append('file', file);
+    
+    //   try {
+    //     const response = await axios.post('/api/content/upload-image', formData, {
+    //       headers: { 'Content-Type': 'multipart/form-data' },
+    //     });
+    //     return response.data.imageUrl; // URL to be embedded in Plate.js content
+    //   } catch (error) {
+    //     console.error('Error uploading image:', error);
+    //     return null;
+    //   }
+    // }
+    // async function handleImageBase64(file: Blob) {
+    //   return new Promise((resolve) => {
+    //     const reader = new FileReader();
+    //     reader.onloadend = () => resolve(reader.result);
+    //     reader.readAsDataURL(file); // Base64-encoded image
+    //   });
+    // }
+    
+    // Example function to add Base64 image to Plate.js content
+    // async function addImageToContent(file: Blob, content: { images: { src: unknown; }[]; }) {
+    //   const base64Image = await handleImageBase64(file);
+    //   content.images.push({ src: base64Image }); // Modify according to Plate.js format
+    //   savePlateContent(content);
+    // }
+
     if (selectedArticle) {
       const articleIndex = articles.findIndex((a) => a.id === selectedArticle.id);
       if (articleIndex === -1) {
