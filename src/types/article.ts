@@ -13,13 +13,16 @@ import { File } from "buffer";
 //     revision: number;
 //     revisions?: ArticleRevision[];
 // }
+
 export interface Article {
     id: string;
     title: string;
-    description: string;
+    status: string;
     excerpt: string;
-    content: string;
-    featuredImage: string;
+    tags: string[]
+    content: object[];
+    isFeatured: boolean;
+    coverImage: string;
     images: File;
     categoryId: string;
     authorId: string;

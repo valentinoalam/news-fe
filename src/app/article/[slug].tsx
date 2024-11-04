@@ -6,7 +6,7 @@ import NextImage from "../../components/image"
 import Seo from "../../components/seo"
 import { getStrapiMedia } from "../../lib/media"
 
-const Article = ({ article, categories }) => {
+const Article = ({ article }) => {
   const imageUrl = getStrapiMedia(article.attributes.image)
 
   const seo = {
@@ -17,7 +17,7 @@ const Article = ({ article, categories }) => {
   }
 
   return (
-    <Layout categories={categories.data}>
+    <>
       <Seo seo={seo} />
       <div
         id="banner"
@@ -54,7 +54,7 @@ const Article = ({ article, categories }) => {
           </div>
         </div>
       </div>
-    </Layout>
+    </>
   )
 }
 

@@ -93,26 +93,26 @@ import { AutoformatPlugin } from '@udecode/plate-autoformat/react';
 import { FontColorPlugin, FontBackgroundColorPlugin, FontSizePlugin } from '@udecode/plate-font/react';
 import { CodeLeaf } from './ui/code-leaf';
 interface PlateEditorProps {
-  initialValue?: string;
-  onChange?: (value: string) => void;
+  initialValue?: Value;
+  onChange?: (value: Value) => void;
 }
 
 type HandleChangeParams = {
   value: Value; // replace with the exact type if known, e.g., `string` or `Record<string, any>`
 };
 
-const PlateEditor = ({ initialValue = "", onChange }: PlateEditorProps) => {
+const PlateEditor = ({ initialValue, onChange }: PlateEditorProps) => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const initialContent = React.useMemo(() => {
     try {
-      return initialValue ? JSON.parse(initialValue) : [{ type: "p", children: [{ text: "" }] }];
+      return initialValue ? initialValue : [{ type: "p", children: [{ text: "" }] }];
     } catch {
       return [{ type: "p", children: [{ text: initialValue }] }];
     }
   }, [initialValue]);
   
   const editor = usePlateEditor({
-    value: initialContent,
+    value: initialContent as Value,
     plugins: [
       ParagraphPlugin,
       BlockquotePlugin,
@@ -279,17 +279,18 @@ const PlateEditor = ({ initialValue = "", onChange }: PlateEditorProps) => {
   const handleChange = ({value}: HandleChangeParams) => {
     const content = JSON.stringify(value)
     localStorage.setItem('editorContent', content)
-    onChange?.(content);
+    onChange?.(value);
     setDebugValue(value);
   };
 
   return (
+    <div>
     <DndProvider backend={HTML5Backend}>
       <Plate editor={editor} onChange={handleChange} >
         <FixedToolbar>
           <FixedToolbarButtons />
         </FixedToolbar>
-        <Editor placeholder="Type..." />
+        <Editor className='rounded-t-none' placeholder="Type..." />
         <FloatingToolbar>
           <FloatingToolbarButtons />
         </FloatingToolbar>
@@ -302,6 +303,7 @@ const PlateEditor = ({ initialValue = "", onChange }: PlateEditorProps) => {
         </Accordion>
       </Plate>
     </DndProvider>
+    </div>
   );
 };
 

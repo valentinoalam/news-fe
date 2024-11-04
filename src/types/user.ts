@@ -1,9 +1,10 @@
 
 export interface User {
     id: string;
-    email: string;
-    name: string;
-    role: string;
+    email: string | null | undefined;
+    name: string | null | undefined;
+    image: string | null | undefined;
+    // role: string;
 }
   
 export  interface LoginCredentials {

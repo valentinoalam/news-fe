@@ -1,9 +1,9 @@
 
 export interface CommentState {
-    comments: Comment[];
+    comments: Comments[];
 }
 
-interface Comment {
+export interface Comments {
     id: string;
     articleId: string;
     parentId: string;
@@ -13,11 +13,11 @@ interface Comment {
       name: string;
       avatar: string;
     };
-    replies?: Comment[];
+    replies?: Comments[];
 }
 
 export interface CommentResponse {
-data: Comment[]; // Array of comments
+data: Comments[]; // Array of comments
 meta: {
     total: number; // Total number of comments
     page: number; // Current page

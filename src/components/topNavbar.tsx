@@ -4,7 +4,8 @@ import { AppDispatch, RootState } from '@/store/store';
 import { ChevronDown, MoreHorizontal } from 'lucide-react';
 import { Category } from '@/types/category';
 import Link from 'next/link';
-import { getInitialCategories } from '@/utils/StorageUtils';
+// import { getInitialCategories } from '@/utils/StorageUtils';
+import { fetchCategories } from '@/store/features/categorySlice';
 
 const NavBar = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -13,10 +14,10 @@ const NavBar = () => {
   const [showMore, setShowMore] = useState(false);
 
   useEffect(() => {
-    if (status === 'idle') {
-      getInitialCategories(dispatch);
+    if (status === 'idle' && categories.length === 0) {
+      dispatch(fetchCategories());
     }
-  }, [dispatch, status]);
+  }, [dispatch, status, categories.length]);
 
   const mainCategories = categories.slice(0, 10);
   const moreCategories = categories.slice(10);

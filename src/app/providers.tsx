@@ -1,30 +1,31 @@
 import { ReactNode } from 'react';
 import { Provider as ReduxProvider } from 'react-redux';
-import { store, persistor } from './store';
 import { PersistGate } from 'redux-persist/integration/react';
-import { store } from '@/store/store';
+import { store, persistor } from '@/store/store';
 import { ThemeProvider } from '@/components/theme-provider';
-// import { AuthProvider } from '@/context/AuthContext';
+import { AuthProvider } from '@/context/authContext';
+import { SessionProvider } from "next-auth/react";
 
-/** 
- * Define the Providers component that wraps children
- * with all required providers,
- * in this example is AuthProvider and ThemeProvider
- */
-export function Providers({ children }: { children: ReactNode }) {
+interface ProvidersProps {
+  children: ReactNode;
+}
+
+export function Providers({ children }: ProvidersProps) {
   return (
     <ReduxProvider store={store}>
       <PersistGate loading={null} persistor={persistor}>
-        {/* <AuthProvider> */}
-          <ThemeProvider
-              attribute="class"
-              defaultTheme="light"
-              enableSystem
-              disableTransitionOnChange
-            >
-            {children}
-          </ThemeProvider>
-        {/* </AuthProvider> */}
+        {/* <SessionProvider  refetchInterval={0} refetchOnWindowFocus={false}>
+          <AuthProvider> */}
+            <ThemeProvider
+                attribute="class"
+                defaultTheme="light"
+                enableSystem
+                disableTransitionOnChange
+              >
+              {children}
+            </ThemeProvider>
+          {/* </AuthProvider>
+        </SessionProvider> */}
       </PersistGate>
     </ReduxProvider>
   );

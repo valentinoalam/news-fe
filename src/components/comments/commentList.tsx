@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { addComment } from '@/store/features/commentSlice';
-import Comment from './comment';
 import { CommentState } from '@/types/comment';
+import CommentsComponent from './comment';
 
 const CommentList = () => {
   const [commentText, setCommentText] = useState('');
@@ -37,9 +37,14 @@ const CommentList = () => {
         </button>
       </div>
       <div>
-        {comments.map((comment) => (
-          <Comment key={comment.id} comment={comment} />
-        ))}
+        {/* Existing Comments */}
+        {comments.length === 0 ? (
+          <p className="text-gray-500">No comments yet. Be the first to comment!</p>
+        ) : (
+          comments.map(comment => (
+            <CommentsComponent key={comment.id} comment={comment} />
+          ))
+        )}
       </div>
     </div>
   );

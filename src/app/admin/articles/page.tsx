@@ -1,83 +1,123 @@
-// pages/article.js
+'use client'
 import { useState } from 'react';
-import PlateEditor from '@/components/plateEditor';
+import { v4 as uuidv4 } from 'uuid';
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Switch } from "@/components/ui/switch";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import axios from 'axios';
 import { Article } from '@/types/article';
 
 export default function ArticlePage( articleData: Article ) {
-  const [title, setTitle] = useState(articleData?.title || '');
-  const [content, setContent] = useState(articleData?.content || '');
-  const [category, setCategory] = useState(articleData?.categoryId || '');
-  const [mediaFiles, setMediaFiles] = useState([]); // For media files
-
-  // Handle article creation
-  const handleCreateArticle = async () => {
-    try {
-      const formData = new FormData();
-      mediaFiles.forEach((file) => formData.append('mediaFiles', file));
-
-      formData.append('title', title);
-      formData.append('content', JSON.stringify(content)); // Convert content to JSON
-      formData.append('category', category);
-
-      const response = await axios.post('/api/articles', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
-
-      console.log(response.data.message);
-    } catch (error) {
-      console.error('Error creating article:', error);
-    }
-  };
-
-  // Handle article saving/updating
-  const handleSaveArticle = async (articleId: string) => {
-    try {
-      const formData = new FormData();
-      mediaFiles.forEach((file) => formData.append('mediaFiles', file));
-
-      formData.append('title', title);
-      formData.append('content', JSON.stringify(content));
-      formData.append('category', category);
-
-      const response = await axios.put(`/api/articles/${articleId}`, formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
-
-      console.log(response.data.message);
-    } catch (error) {
-      console.error('Error saving article:', error);
-    }
-  };
+  const [articles, setArticles] = useState<Article[]>([]);
+  const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
+  const [isEditing, setIsEditing] = useState(false);
 
   return (
-    <div>
-      <h1>{articleData ? 'Edit Article' : 'Create New Article'}</h1>
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <Card className="md:col-span-1">
+        <CardHeader>
+          <CardTitle>Articles</CardTitle>
+          <CardDescription>Manage your articles</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <ScrollArea className="h-[600px]">
+            {articles.map((article) => (
+              <div
+                key={article.id}
+                className="p-4 border-b cursor-pointer hover:bg-accent"
+                onClick={() => {
+                  setSelectedArticle(article);
+                  setIsEditing(true);
+                }}
+              >
+                <h3 className="font-semibold">{article.title}</h3>
+                <p className="text-sm text-muted-foreground">
+                  {new Date(article.publishedAt).toLocaleDateString()}
+                </p>
+              </div>
+            ))}
+          </ScrollArea>
+        </CardContent>
+      </Card>
+      
+      <Card className="md:col-span-2">
+        <CardHeader>
+          <CardTitle>{isEditing ? "Edit Article" : "Article Details"}</CardTitle>
+        </CardHeader>
+        <CardContent>
+          {selectedArticle && isEditing ? (
+            <div className="space-y-6">
+              <div className="space-y-2">
+                <Label htmlFor="title">Title</Label>
+                <Input
+                  id="title"
+                  value={selectedArticle.title}
+                  onChange={(e) =>
+                    setSelectedArticle({ ...selectedArticle, title: e.target.value })
+                  }
+                />
+              </div>
 
-      <input
-        type="text"
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-        placeholder="Article Title"
-      />
+              <div className="space-y-2">
+                <Label htmlFor="excerpt">Excerpt</Label>
+                <Input
+                  id="excerpt"
+                  value={selectedArticle.excerpt}
+                  onChange={(e) =>
+                    setSelectedArticle({ ...selectedArticle, excerpt: e.target.value })
+                  }
+                />
+              </div>
 
-      <select value={category} onChange={(e) => setCategory(e.target.value)}>
-        <option value="">Select Category</option>
-        <option value="news">News</option>
-        <option value="tutorial">Tutorial</option>
-      </select>
+              <div className="space-y-2">
+                <Label htmlFor="image">Image URL</Label>
+                <Input
+                  id="image"
+                  value={selectedArticle.image}
+                  onChange={(e) =>
+                    setSelectedArticle({ ...selectedArticle, image: e.target.value })
+                  }
+                />
+              </div>
 
-      <PlateEditor value={content} setValue={setContent} />
+              <div className="space-y-2">
+                <Label htmlFor="content">Content</Label>
+                <PlateEditor
+                  initialValue={selectedArticle.content}
+                  onChange={(value: string) =>
+                    setSelectedArticle({ ...selectedArticle, content: value })
+                  }
+                />
+              </div>
 
-      <input
-        type="file"
-        multiple
-        onChange={(e) => setMediaFiles(Array.from(e.target.files))}
-      />
+              <div className="flex items-center space-x-2">
+                <Switch
+                  checked={selectedArticle.isHeadline}
+                  onCheckedChange={(checked) =>
+                    setSelectedArticle({ ...selectedArticle, isHeadline: checked })
+                  }
+                />
+                <Label>Set as Headline</Label>
+              </div>
 
-      <button onClick={articleData ? () => handleSaveArticle(articleData.id) : handleCreateArticle}>
-        {articleData ? 'Save Article' : 'Create Article'}
-      </button>
+              <div className="flex justify-end space-x-2">
+                <Button variant="outline" onClick={() => setIsEditing(false)}>
+                  Cancel
+                </Button>
+                <Button onClick={handleSaveArticle}>Save Article</Button>
+              </div>
+            </div>
+          ) : (
+            <div className="text-center text-muted-foreground">
+              Select an article to edit or create a new one
+            </div>
+          )}
+        </CardContent>
+      </Card>
     </div>
   );
 }

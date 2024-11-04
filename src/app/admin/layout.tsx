@@ -13,19 +13,7 @@ import {
 } from 'lucide-react';
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-// import { Metadata } from "next";
-// import { SidebarNav } from "@/components/sidebar-nav";
-
-// export const metadata: Metadata = {
-//   title: "Admin Dashboard - NYT Clone",
-//   description: "Admin dashboard for managing articles and headlines",
-// };
+import { SidebarNav } from '@/components/sidebar-nav';
 
 export default function AdminLayout({
   children,
@@ -47,7 +35,7 @@ export default function AdminLayout({
       {/* Top Bar */}
       <header className="h-16 bg-white border-b flex items-center justify-between px-4 fixed w-full z-50">
         <div className="flex items-center gap-2">
-          <span className="font-semibold text-xl">Admin Panel</span>
+          <span className="font-bold text-xl">Admin Panel</span>
         </div>
         <div className="flex items-center gap-4">
           <Button variant="ghost" size="icon">
@@ -60,7 +48,7 @@ export default function AdminLayout({
         {/* Sidebar */}
         <aside
           className={cn(
-            "bg-white h-[calc(100vh-4rem)] fixed border-r transition-all duration-300",
+            "bg-white h-[calc(100vh-4rem)] fixed border-r transition-all duration-300 z-50",
             collapsed ? "w-16" : "w-64"
           )}
         >
@@ -77,35 +65,9 @@ export default function AdminLayout({
               )}
             </Button>
           </div>
-
-          <nav className="space-y-2 px-2">
-            <TooltipProvider>
-              {menuItems.map((item) => (
-                <Tooltip key={item.label} delayDuration={0}>
-                  <TooltipTrigger asChild>
-                    <a
-                      href={item.href}
-                      className={cn(
-                        "flex items-center gap-3 px-3 py-2 rounded-md hover:bg-gray-100 transition-colors",
-                        collapsed ? "justify-center" : ""
-                      )}
-                    >
-                      <item.icon className="h-5 w-5" />
-                      {!collapsed && <span>{item.label}</span>}
-                    </a>
-                  </TooltipTrigger>
-                  {collapsed && (
-                    <TooltipContent side="right">
-                      {item.label}
-                    </TooltipContent>
-                  )}
-                </Tooltip>
-              ))}
-            </TooltipProvider>
-          </nav>
+          <SidebarNav menuItems={menuItems} collapsed={collapsed} />
         </aside>
-        {/* <h1 className="text-3xl font-bold">Admin Dashboard</h1>
-        <SidebarNav items={[{ href: 'string', title: 'string' },]} /> */}
+
         {/* Main Content */}
         <main
           className={cn(

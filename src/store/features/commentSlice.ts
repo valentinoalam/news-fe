@@ -1,4 +1,4 @@
-import { Comment, CommentState } from '@/types/comment';
+import { Comments, CommentState } from '@/types/comment';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 
@@ -13,10 +13,10 @@ export const commentsSlice = createSlice({
     addComment: (state, action) => {
       state.comments.push(action.payload);
     },
-    addReply: (state, action: PayloadAction<{ parentId: string; reply: Comment }>) => {
+    addReply: (state, action: PayloadAction<{ parentId: string; reply: Comments }>) => {
       const { parentId, reply } = action.payload;
     
-      const addReplyRecursive = (comments: Comment[]): Comment[] => {
+      const addReplyRecursive = (comments: Comments[]): Comments[] => {
         return comments.map((comment) => {
           if (comment.id === parentId) {
             return {

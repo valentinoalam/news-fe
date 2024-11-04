@@ -1,4 +1,5 @@
 'use client'
+import { Toaster } from "@/components/ui/toaster";
 import "./globals.css";
 import { Providers } from './providers';
 import { Inter } from 'next/font/google';
@@ -15,6 +16,7 @@ export default function RootLayout({
       <body className={` ${inter.className} antialiased`}>
         <Providers>
           {children}
+          <Toaster />
         </Providers>
       </body>
     </html>

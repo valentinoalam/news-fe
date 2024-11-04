@@ -12,8 +12,9 @@ import {
 import { format } from "date-fns";
 import Link from "next/link";
 import NavBar from "./topNavbar";
+import { User as UserType } from "@/types/user";
 
-export default function Header() {
+export default function Header({ user }: { user: UserType }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const appName = process.env.NEXT_PUBLIC_APP_NAME;
   return (
@@ -24,7 +25,7 @@ export default function Header() {
           <Button variant="ghost" size="icon" onClick={() => setIsMenuOpen(!isMenuOpen)}>
             <Menu className="h-6 w-6" />
           </Button>
-          
+          <h1>Welcome, {user ? user.name : "Guest"}!</h1>
           <div className="flex items-center space-x-4">
             <Button variant="ghost" size="icon">
               <Search className="h-5 w-5" />

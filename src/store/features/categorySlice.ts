@@ -1,10 +1,7 @@
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { persistReducer } from 'redux-persist';
-import storage from 'redux-persist/lib/storage'; // defaults to localStorage for web
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { Category, CategoryResponse, CategoryState } from '@/types/category';
 import { categoryService } from '@/services/categoryService';
-import { CategoryState, CategoryResponse, Category } from '@/types/category';
 
-// Define the initial state
 const initialState: CategoryState = {
   categories: [],
   status: 'idle',
@@ -18,8 +15,10 @@ export const fetchCategories = createAsyncThunk(
   async (_, { rejectWithValue, dispatch }) => {
     try {
       const data: CategoryResponse = await categoryService.getCategories(); // Replace with your API endpoint
+      // Check if the data returned is valid
       if (!data.meta?.success) throw new Error('Failed to fetch categories');
       if (!data.records) throw new Error('There is no recorded data');
+      // Dispatch setCategories to update state and save to local storage
       dispatch(setCategories(data.records));
 
       return data.records; // Return the records if needed
@@ -27,7 +26,7 @@ export const fetchCategories = createAsyncThunk(
       if (error instanceof Error) {
         return rejectWithValue(error.message);
       }
-      return [];
+      return []
     }
   }
 );
@@ -81,17 +80,8 @@ export const categorySlice = createSlice({
         state.status = 'failed';
         state.error = action.payload as string;
       });
-  },
+    },
 });
 
 export const { setCategories, addCategory, addSubcategory } = categorySlice.actions;
-
-// Persist configuration for the category slice
-const persistConfig = {
-  key: 'categories',
-  storage,
-  whitelist: ['categories'] // Persist only the categories field
-};
-
-// Export the persisted reducer
-export default persistReducer(persistConfig, categorySlice.reducer);
+export default categorySlice.reducer;

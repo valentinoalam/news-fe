@@ -81,7 +81,7 @@ export const authOptions: NextAuthOptions = {
       secret: process.env.NEXTAUTH_SECRET as string,
       maxAge: 30 * 24 * 60 * 60, // 30 days
   },
-  debug: true,
+  debug: false,
   callbacks: {
     async signIn({ account, profile }) {
       console.log("signIn callback triggered")
