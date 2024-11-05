@@ -1,29 +1,16 @@
 import { File } from "buffer";
 
-// export interface Article {
-//     id: string;
-//     title: string;
-//     description: string;
-//     excerpt: string;
-//     content: string;
-//     featuredImage : string;
-//     images: File;
-//     categoryId: string;
-//     authorId: string;
-//     revision: number;
-//     revisions?: ArticleRevision[];
-// }
-
 export interface Article {
     id: string;
     title: string;
+    description: string;
     status: string;
     excerpt: string;
-    tags: string[]
+    tags?: string[]
     content: object[];
     isFeatured: boolean;
-    coverImage: string;
-    images: File;
+    featuredImage: string;
+    images?: File[];
     categoryId: string;
     authorId: string;
     revision: number;

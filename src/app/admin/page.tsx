@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
-import PlateEditor from "@/components/plateEditor";
+import PlateEditor from "@/components/plate-ui/plateEditor";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import CategoryAdmin from "./category/page";
 interface Article {
