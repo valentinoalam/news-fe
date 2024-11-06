@@ -9,9 +9,9 @@ import {
 import { Smile } from 'lucide-react';
 
 import { emojiCategoryIcons, emojiSearchIcons } from './emoji-icons';
-import { EmojiPicker } from '../ui/emoji-picker';
-import { EmojiToolbarDropdown } from '../ui/emoji-toolbar-dropdown';
-import { ToolbarButton } from '../ui/toolbar';
+import { EmojiPicker } from './emoji-picker';
+import { EmojiToolbarDropdown } from './emoji-toolbar-dropdown';
+import { ToolbarButton } from './toolbar';
 
 type EmojiDropdownMenuProps = {
   options?: EmojiDropdownMenuOptions;

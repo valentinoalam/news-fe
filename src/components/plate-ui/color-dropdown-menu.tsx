@@ -13,8 +13,8 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuTrigger,
-} from '../ui/dropdown-menu';
-import { ToolbarButton } from '../ui/toolbar';
+} from './dropdown-menu';
+import { ToolbarButton } from './toolbar';
 
 type ColorDropdownMenuProps = {
   nodeType: string;

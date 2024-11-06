@@ -11,10 +11,11 @@ import {
   InlineComboboxEmpty,
   InlineComboboxInput,
   InlineComboboxItem,
-} from '../ui/inline-combobox';
-import { PlateElement } from '../ui/plate-element';
+} from './inline-combobox';
+import { PlateElement } from './plate-element';
 
 export const EmojiInputElement = withRef<typeof PlateElement>(
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   ({ className, ...props }, ref) => {
     const { children, editor, element } = props;
     const [value, setValue] = useState('');

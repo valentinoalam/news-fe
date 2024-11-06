@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
+import Header from '@/components/header/Header';
+import Footer from '@/components/footer/Footer';
 import { redirect } from 'next/navigation';
 import { authOptions } from '@/lib/auth'
 import { getCurrentUser } from "@/lib/session";

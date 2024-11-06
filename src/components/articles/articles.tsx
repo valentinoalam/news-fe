@@ -1,7 +1,8 @@
 import React from "react"
-import { Card } from "./ui/card"
+import { Article } from "@/types/article"
+import ArticleCard from "./articleCard"
 
-const Articles = ({ articles }) => {
+const Articles = ({ articles }: {articles: Article[]}) => {
   const leftArticlesCount = Math.ceil(articles.length / 5)
   const leftArticles = articles.slice(0, leftArticlesCount)
   const rightArticles = articles.slice(leftArticlesCount, articles.length)
@@ -10,22 +11,22 @@ const Articles = ({ articles }) => {
     <div>
       <div className="uk-child-width-1-2@s" data-uk-grid="true">
         <div>
-          {leftArticles.map((article, i) => {
+          {leftArticles.map((article) => {
             return (
-              <Card
+              <ArticleCard
                 article={article}
-                key={`article__left__${article.attributes.slug}`}
+                key={`article__left__${article.slug}`}
               />
             )
           })}
         </div>
         <div>
           <div className="uk-child-width-1-2@m uk-grid-match" data-uk-grid>
-            {rightArticles.map((article, i) => {
+            {rightArticles.map((article) => {
               return (
-                <Card
+                <ArticleCard
                   article={article}
-                  key={`article__left__${article.attributes.slug}`}
+                  key={`article__left__${article.slug}`}
                 />
               )
             })}

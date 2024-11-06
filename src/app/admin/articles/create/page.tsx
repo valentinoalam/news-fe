@@ -1,5 +1,5 @@
 import React from 'react'
-import CreateorEditArticles from '@/components/articles/createOrEdit'
+import CreateorEditArticles from '@/components/articles/admin/createOrEdit'
 function CreateArticlePage() {
   return (
     <CreateorEditArticles />

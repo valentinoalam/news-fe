@@ -35,9 +35,9 @@ export default function ArticlesPage() {
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-7">
           <div>
-            <CardTitle className="text-2xl font-bold">Articles</CardTitle>
+            <CardTitle className="text-2xl font-bold">Users Management</CardTitle>
             <CardDescription>
-              Manage your articles and blog posts
+              See and Manage all your subscribers.
             </CardDescription>
           </div>
           <Button
@@ -45,7 +45,7 @@ export default function ArticlesPage() {
             className="bg-primary hover:bg-primary/90"
           >
             <PlusCircle className="mr-2 h-4 w-4" />
-            Create Article
+            Add Admin
           </Button>
         </CardHeader>
         <CardContent>

@@ -11,11 +11,12 @@ import { Switch } from "@/components/ui/switch";
 import PlateEditor from "@/components/plate-ui/plateEditor";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import CategoryAdmin from "./category/page";
+import { Value } from "@udecode/plate-common";
 interface Article {
   id: string;
   title: string;
   excerpt: string;
-  content: string;
+  content: object[];
   image: string;
   isHeadline: boolean;
   author: string;
@@ -32,7 +33,7 @@ export default function AdminPage() {
       id: uuidv4(),
       title: "",
       excerpt: "",
-      content: "",
+      content: [{ type: "p", children: [{ text: "" }] }],
       image: "",
       isHeadline: false,
       author: "",
@@ -187,8 +188,8 @@ export default function AdminPage() {
                     <div className="space-y-2">
                       <Label htmlFor="content">Content</Label>
                       <PlateEditor
-                        initialValue={selectedArticle.content}
-                        onChange={(value: string) =>
+                        initialValue={selectedArticle.content as Value}
+                        onChange={(value: Value) =>
                           setSelectedArticle({ ...selectedArticle, content: value })
                         }
                       />

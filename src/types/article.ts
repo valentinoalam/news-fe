@@ -2,11 +2,13 @@ import { File } from "buffer";
 
 export interface Article {
     id: string;
+    slug: string;
     title: string;
     description: string;
-    status: string;
+    status: "Draft" | "Published" | "Archived";
     excerpt: string;
     tags?: string[]
+    viewCount: number;
     content: object[];
     isFeatured: boolean;
     featuredImage: string;
@@ -23,6 +25,8 @@ export interface Article {
         name: string;
     };
     publishedAt?: Date;
+    createdAt?: Date;
+    updatedAt?: Date;
 }
 
 export interface ArticleRevision {

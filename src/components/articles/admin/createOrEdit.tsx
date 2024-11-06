@@ -11,7 +11,7 @@ import { ArrowLeft } from "lucide-react";
 import { RootState } from '@/store/store';
 import { useSelector } from 'react-redux';
 import PlateEditor from '@/components/plate-ui/plateEditor';
-import ImageUploader from '@/components/imageUploader';
+import ImageUploader from '@/components/articles/admin/imageUploader';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -33,8 +33,9 @@ import {
 } from "@/components/ui/select";
 import { toast } from '@/hooks/use-toast';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import Tags from '../tags';
-import { Textarea } from '../ui/textarea';
+import Tags from './tags';
+import { Textarea } from '../../ui/textarea';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 
 const formSchema = z.object({
     title: z
@@ -127,7 +128,8 @@ export default function CreateorEditArticles({ articleData }: { articleData?: Ar
         <ArrowLeft className="mr-2 h-4 w-4" />
         Back to Articles
       </Button> }
-      <Card className="bg-white border border-gray-200 rounded-lg shadow-lg p-2">
+
+      <Card className="bg-white border border-gray-200 rounded-lg min-h-96 shadow-lg p-2">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 z-50">
               <CardHeader className='justify-between'>
@@ -152,6 +154,12 @@ export default function CreateorEditArticles({ articleData }: { articleData?: Ar
                 />
               </CardHeader>
               <CardContent className='space-y-3'>
+              <Tabs defaultValue="editor">
+                <TabsList>
+                  <TabsTrigger value="editor">Content Form</TabsTrigger>
+                  <TabsTrigger value="uploader">Upload Images</TabsTrigger>
+                </TabsList>
+                <TabsContent value="editor">
                 {/* Title Field */}
                 <FormField
                   control={form.control}
@@ -246,7 +254,6 @@ export default function CreateorEditArticles({ articleData }: { articleData?: Ar
                     </FormItem>
                   )}
                 />
-                <ImageUploader/>
                 <FormField
                   control={form.control}
                   name="content"
@@ -303,9 +310,14 @@ export default function CreateorEditArticles({ articleData }: { articleData?: Ar
                     {articleData ? 'Save Article' : 'Create Article'}
                   </Button>
                 </div>
-              </CardContent>
-            </form>
-          </Form>
+                </TabsContent>
+                <TabsContent value="uploader">
+                  <ImageUploader/>
+                </TabsContent>
+              </Tabs>
+            </CardContent>
+          </form>
+        </Form>
       </Card>
     </div>
   );

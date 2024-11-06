@@ -8,7 +8,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@/components/plate-ui/dropdown-menu";
 import { format } from "date-fns";
 import Link from "next/link";
 import NavBar from "./topNavbar";

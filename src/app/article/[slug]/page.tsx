@@ -1,5 +1,5 @@
 import CommentsSection from "@/components/comments/commentSection";
-import NewsArticleSEO from "@/components/seo";
+import NewsArticleSEO from "@/components/articles/seo";
 import Image from "next/image";
 import { Article } from "@/types/article";
 import { Comments } from "@/types/comment";

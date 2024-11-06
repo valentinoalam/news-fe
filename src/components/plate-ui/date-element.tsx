@@ -4,9 +4,9 @@ import { cn, withRef } from '@udecode/cn';
 import { setNodes } from '@udecode/plate-common';
 import { findNodePath } from '@udecode/plate-common/react';
 
-import { Calendar } from './calendar';
+import { Calendar } from '@/components/ui/calendar';
 import { PlateElement } from './plate-element';
-import { Popover, PopoverContent, PopoverTrigger } from './popover';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 
 export const DateElement = withRef<typeof PlateElement>(
   ({ children, className, ...props }, ref) => {

@@ -10,8 +10,8 @@ interface ImageFile {
 import React, { useState, useRef, DragEvent, ChangeEvent } from 'react';
 import { Upload, X, Grip, Star, StarOff, Pencil, Copy, Check } from 'lucide-react';
 import Image from 'next/image';
-import { Card } from './ui/card';
-import { Button } from './ui/button';
+import { Card } from '../ui/card';
+import { Button } from '../ui/button';
   
 const ImageUploader: React.FC = () => {
 const [images, setImages] = useState<ImageFile[]>([]);
@@ -157,7 +157,7 @@ return (
                     autoFocus
                     />
                 ) : (
-                    <div className="flex-1 truncate mb-2">{image.alt}</div>
+                    <span className="flex-1 break-all hyphens-auto text-center text-wrap mb-2">{image.alt}</span>
                 )}
 
                 {/* Action Buttons */}

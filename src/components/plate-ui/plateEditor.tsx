@@ -50,7 +50,7 @@ import { ColumnElement } from './column-element';
 import { ColumnGroupElement } from './column-group-element';
 import { CommentLeaf } from './comment-leaf';
 import { CommentsPopover } from './comments-popover';
-import { DateElement } from '../ui/date-element';
+import { DateElement } from './date-element';
 import { ExcalidrawElement } from './excalidraw-element';
 import { HighlightLeaf } from './highlight-leaf';
 import { HrElement } from './hr-element';
