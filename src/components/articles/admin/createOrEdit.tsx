@@ -10,7 +10,7 @@ import * as z from "zod";
 import { ArrowLeft } from "lucide-react";
 import { RootState } from '@/store/store';
 import { useSelector } from 'react-redux';
-import PlateEditor from '@/components/plate-ui/plateEditor';
+import ContentEditor from '@/components/plate-ui/plateEditor';
 import ImageUploader from '@/components/articles/admin/imageUploader';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -36,6 +36,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Tags from './tags';
 import { Textarea } from '../../ui/textarea';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import { countWords } from '@/utils/metadata.util';
 
 const formSchema = z.object({
     title: z
@@ -109,6 +110,9 @@ export default function CreateorEditArticles({ articleData }: { articleData?: Ar
   
   function onSubmit(data: z.infer<typeof formSchema>) {
     console.log("Form data submitted:", data);
+    const wordCount = countWords();
+    const readingTime = wordCount / 200;
+    console.log("Read Time:", readingTime)
     toast({
       title: "You submitted the following values:",
       description: (
@@ -261,7 +265,7 @@ export default function CreateorEditArticles({ articleData }: { articleData?: Ar
                     <FormItem>
                       <FormLabel>Content</FormLabel>
                       <FormControl>
-                        <PlateEditor
+                        <ContentEditor
                           initialValue={field.value}
                           onChange={field.onChange}
                         />

@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { usePlateEditor, Plate, ParagraphPlugin, PlateLeaf } from '@udecode/plate-common/react';
 import { Editor } from '@/components/plate-ui/editor';
 import { Value } from '@udecode/plate-common';
+
 import { FixedToolbar } from '@/components/plate-ui/fixed-toolbar';
 import { FixedToolbarButtons } from '@/components/plate-ui/fixed-toolbar-buttons';
 import {
@@ -15,6 +16,7 @@ import {
   SubscriptPlugin,
   SuperscriptPlugin,
 } from '@udecode/plate-basic-marks/react';
+import { HtmlReactPlugin } from '@udecode/plate-html/react';
 import { HeadingPlugin, TocPlugin } from '@udecode/plate-heading/react';
 import { BlockquotePlugin } from '@udecode/plate-block-quote/react';
 import { CodeBlockPlugin, CodeLinePlugin, CodeSyntaxPlugin } from '@udecode/plate-code-block/react';
@@ -101,7 +103,7 @@ type HandleChangeParams = {
   value: Value; // replace with the exact type if known, e.g., `string` or `Record<string, any>`
 };
 
-const PlateEditor = ({ initialValue, onChange }: PlateEditorProps) => {
+const ContentEditor = ({ initialValue, onChange }: PlateEditorProps) => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const initialContent = React.useMemo(() => {
     try {
@@ -114,6 +116,7 @@ const PlateEditor = ({ initialValue, onChange }: PlateEditorProps) => {
   const editor = usePlateEditor({
     value: initialContent as Value,
     plugins: [
+      HtmlReactPlugin,
       ParagraphPlugin,
       BlockquotePlugin,
       CodeBlockPlugin,
@@ -274,11 +277,17 @@ const PlateEditor = ({ initialValue, onChange }: PlateEditorProps) => {
         [SuperscriptPlugin.key]: withProps(PlateLeaf, { as: 'sup' }),
         [UnderlinePlugin.key]: withProps(PlateLeaf, { as: 'u' }),
       }))),
-    },});
+    },
+  });
+
+  const html = editor.api.htmlReact.serialize({
+    nodes: editor.children,
+    // if you use @udecode/plate-dnd
+    dndWrapper: (props) => <DndProvider backend={HTML5Backend} {...props} />,
+  });
   const [debugValue, setDebugValue] = useState<Value>();
   const handleChange = ({value}: HandleChangeParams) => {
-    const content = JSON.stringify(value)
-    localStorage.setItem('editorContent', content)
+    localStorage.setItem('editorContent', html)
     onChange?.(value);
     setDebugValue(value);
   };
@@ -307,4 +316,4 @@ const PlateEditor = ({ initialValue, onChange }: PlateEditorProps) => {
   );
 };
 
-export default PlateEditor;
+export default ContentEditor;

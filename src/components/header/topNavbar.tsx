@@ -37,8 +37,8 @@ const NavBar = () => {
   }
 
   return (
-    <nav className="relative bg-white border-b border-gray-200">
-      <div className="container mx-auto flex items-center h-16">
+    <nav className="relative self-center bg-white border-t border-gray-200">
+      <div className="container mx-auto justify-center flex items-center h-16">
         <ul className="flex space-x-6">
           {mainCategories.map((category: Category) => (
             <li

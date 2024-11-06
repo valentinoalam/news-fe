@@ -16,6 +16,7 @@ export const buttonVariants = cva(
         true: 'w-full cursor-pointer justify-start',
       },
       size: {
+        avatar: 'relative h-8 w-8 rounded-full overflow-hidden',
         icon: 'size-[28px] rounded-md px-1.5',
         lg: 'h-10 rounded-md px-4',
         md: 'h-8 px-3 text-sm',

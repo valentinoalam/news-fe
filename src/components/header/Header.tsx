@@ -1,18 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { Menu, Search, User } from "lucide-react";
+
+import { Menu, Search  } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/plate-ui/dropdown-menu";
 import { format } from "date-fns";
-import Link from "next/link";
 import NavBar from "./topNavbar";
 import { User as UserType } from "@/types/user";
+import UserDropdownMenu from "./userMenu";
+
 
 export default function Header({ user }: { user: UserType }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -22,28 +18,15 @@ export default function Header({ user }: { user: UserType }) {
       <div className="container mx-auto px-4">
         {/* Top Bar */}
         <div className="flex items-center justify-between py-2 border-b">
-          <Button variant="ghost" size="icon" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+          <Button className="flex lg:hidden" variant="ghost" size="icon" onClick={() => setIsMenuOpen(!isMenuOpen)}>
             <Menu className="h-6 w-6" />
+          </Button>
+          <Button className="hidden lg:flex" variant="ghost" size="icon">
+            <Search className="h-5 w-5" />
           </Button>
           <h1>Welcome, {user ? user.name : "Guest"}!</h1>
           <div className="flex items-center space-x-4">
-            <Button variant="ghost" size="icon">
-              <Search className="h-5 w-5" />
-            </Button>
-            
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon">
-                  <User className="h-5 w-5" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <Link href="/signup">
-                  <DropdownMenuItem>Sign Up</DropdownMenuItem>
-                </Link>
-                <DropdownMenuItem>Create Account</DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <UserDropdownMenu user={user} />
           </div>
         </div>
 

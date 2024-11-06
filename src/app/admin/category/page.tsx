@@ -239,7 +239,7 @@ const CategoryItem = ({ category, level = 0, onEdit, onDelete }) => {
   );
 };
 
-const CategoryAdmin = () => {
+const CategoryManagementPage = () => {
   // const {
   //   categories,
   //   loading,

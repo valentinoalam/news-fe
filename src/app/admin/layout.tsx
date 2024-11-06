@@ -10,10 +10,16 @@ import {
   Image,
   MessageSquare,
   PlusCircle,
+  Folders,
 } from 'lucide-react';
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { SidebarNav } from '@/components/sidebar-nav';
+import UserDropdownMenu from '@/components/header/userMenu';
+import { useSelector } from 'react-redux';
+import { selectSession } from '@/store/features/authSlice';
+import { User } from '@/types/user';
+import Link from 'next/link';
 
 export default function AdminLayout({
   children,
@@ -23,13 +29,15 @@ export default function AdminLayout({
   const [collapsed, setCollapsed] = useState(false);
 
   const menuItems = [
-    { icon: LayoutDashboard, label: 'Dashboard', href: '#' },
-    { icon: FileText, label: 'Posts', href: '#' },
-    { icon: Image, label: 'Media', href: '#' },
-    { icon: MessageSquare, label: 'Comments', href: '#' },
+    { icon: LayoutDashboard, label: 'Dashboard', href: '/admin' },
+    { icon: FileText, label: 'Posts', href: '/admin/articles' },
+    { icon: Image, label: 'Media', href: '/admin/media' },
+    { icon: Folders, label: 'Categories', href: '/admin/category' },
+    { icon: MessageSquare, label: 'Comments', href: '/admin/comments' },
     { icon: Users, label: 'Users', href: '#' },
     { icon: Settings, label: 'Settings', href: '#' },
   ];
+  const session = useSelector(selectSession)
   return (
     <div className="min-h-screen bg-background">
       {/* Top Bar */}
@@ -39,8 +47,9 @@ export default function AdminLayout({
         </div>
         <div className="flex items-center gap-4">
           <Button variant="ghost" size="icon">
-            <PlusCircle className="h-5 w-5" />
+            <Link href="/admin/articles/create"><PlusCircle className="h-5 w-5" /></Link>
           </Button>
+          <UserDropdownMenu user={session?.user as User} />
         </div>
       </header>
 

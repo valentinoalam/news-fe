@@ -1,6 +1,9 @@
-import { createContext, useContext, useEffect, useState, ReactNode, useDebugValue } from "react";
+import { createContext, useContext, useEffect, ReactNode, useDebugValue } from "react";
 import { useSession, signIn, signOut } from "next-auth/react";
 import { Session } from "next-auth";
+import { useDispatch, useSelector } from "react-redux";
+import { setSession, setLoading } from "@/store/features/authSlice"
+import { RootState } from "@/store/store";
 
 // Define the context's shape
 interface AuthContextProps {
@@ -18,13 +21,18 @@ interface AuthProviderProps {
 }
 
 // AuthProvider component to wrap the application
-const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
+const AuthProvider: React.FC<AuthProviderProps> = ({ children }: { children: React.ReactNode }) => {
+  const dispatch = useDispatch();
+  const { loading } = useSelector((state: RootState) => state.auth);
   const { data: session, status } = useSession();
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setLoading(status === "loading");
-  }, [status]);
+    if (status === 'loading') {
+      dispatch(setLoading(true));
+    } else {
+      dispatch(setSession(session));
+    }
+  }, [session, status, dispatch]);
 
   const login = () => signIn();
   const logout = () => signOut();

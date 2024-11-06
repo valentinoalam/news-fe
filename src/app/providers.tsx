@@ -14,8 +14,8 @@ export function Providers({ children }: ProvidersProps) {
   return (
     <ReduxProvider store={store}>
       <PersistGate loading={null} persistor={persistor}>
-        {/* <SessionProvider  refetchInterval={0} refetchOnWindowFocus={false}>
-          <AuthProvider> */}
+        <SessionProvider  refetchInterval={0} refetchOnWindowFocus={false}>
+          <AuthProvider> 
             <ThemeProvider
                 attribute="class"
                 defaultTheme="light"
@@ -24,8 +24,8 @@ export function Providers({ children }: ProvidersProps) {
               >
               {children}
             </ThemeProvider>
-          {/* </AuthProvider>
-        </SessionProvider> */}
+           </AuthProvider>
+       </SessionProvider>
       </PersistGate>
     </ReduxProvider>
   );
